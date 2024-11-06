@@ -1,14 +1,4 @@
-import { CustomLogger, LogLevel } from "../CustomLogger/CustomLogger";
-import { UrlFetchStream } from "../UrlFetch/UrlFetch";
-import { LINEMessagePushStream } from "../UrlFetch.LINE/API/Message/Push/Stream";
-import { TextMessage } from "../UrlFetch.LINE/API/MessageObjects";
-import { UrlFetchManager } from "../UrlFetch/UrlFetchManager";
-
-type EnumDictionary<T extends string | symbol | number, U> = {
-    [K in T]: U;
-};
-
-export class LINELogger implements CustomLogger {
+class LINELogger implements CustomLogger {
     public channelAccessToken: string;
     public targetIdTable: EnumDictionary<LogLevel, string[]> = {
         [LogLevel.Debug]: [],
@@ -22,7 +12,7 @@ export class LINELogger implements CustomLogger {
         if (!targetIds || targetIds.length === 0) {
             return;
         }
-        const streams: UrlFetchStream[] = [];
+        const streams: UrlFetch.Stream[] = [];
         let messageText = message.toString();
         switch (level) {
             case LogLevel.Warning:
@@ -32,7 +22,7 @@ export class LINELogger implements CustomLogger {
                 messageText = "Error!!\n" + messageText;
                 break;
         }
-        const textMessage: TextMessage = {
+        const textMessage: UrlFetch_LINE.MessageObjects.TextMessage = {
             type: 'text',
             text: messageText,
         };
@@ -52,7 +42,7 @@ export class LINELogger implements CustomLogger {
         if (!targetIds || targetIds.length === 0) {
             return;
         }
-        const streams: UrlFetchStream[] = [];
+        const streams: UrlFetch.Stream[] = [];
         const message = `Exception!!!
 [Message]
 ${error.toString()}
@@ -62,7 +52,7 @@ ${error.toString()}
 ${error.stack}
 \`\`\`
 `;
-        const textMessage: TextMessage = {
+        const textMessage: UrlFetch_LINE.MessageObjects.TextMessage = {
             type: 'text',
             text: message,
         };
